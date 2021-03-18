@@ -1,3 +1,6 @@
+// 不再需要這個了，這個留著是為了 可讀性
+// 直接使用 FindMagicNumbersPosition 取代即可
+
 struct FindMagicNumberPosition{
     var data: Data
     var magicNumber: [UInt8]
