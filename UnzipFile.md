@@ -384,7 +384,7 @@ let cd1 = OneCentralDirectoryFileHeader(bytes: (r2 as NSData).bytes + Int(pos2))
 cd1.CompressedSize // 497296
 ```
 
-實驗15: 解壓縮，處理一個檔案
+實驗15: 解壓縮，處理一個檔案 (請用 實驗16-因為當不知道dst size時)
 實驗15a: 整理一下，必要數字
 - 使用 EOCD 得到 CD，得到 data offset 與 length
 - 注意，我用 od 的 filename length 與 extra field length 去得到 data 的開始是不對的，應該要用 file header 的 filename length 與 extra field length ，雖然理論上一樣，但不一定一樣。 (我用的 case, extra field 就不一樣長，一個24 一個28)
@@ -453,4 +453,60 @@ try! r3.write(to: r3b)
 ```swift=
 //let r3 = Data(bytes: dstbys, count: 1634304)
 let r3 = Data(bytesNoCopy: dstbys, count: 1634304, deallocator: .none)
+```
+
+實驗16: 壓縮、解壓 (有進度列的)
+- https://developer.apple.com/documentation/accelerate/compressing_and_decompressing_data_with_input_and_output_filters
+
+實驗16a: 壓縮
+```swift=
+func compressTest(data: Data)->Data {
+    var re = Data()
+    
+    var idx = 0
+    let pageSize = 1024 // 愈小，進度列愈密。
+    
+    let r1 = try! OutputFilter(.compress, using: .zlib, bufferCapacity: pageSize, writingTo: { (a1) in
+        if let a1a = a1 {
+            re.append(a1a) // 此處可作進度列
+        }
+    })
+    while ( true ){
+        let r2 = min(pageSize, data.count - idx)
+
+        let r3 = data.subdata(in: idx ..< (idx + r2))
+        idx += r2
+        try! r1.write(r3)
+        
+        if ( r2 == 0 ){ // 這個要放在這，不然放在 min 下面時， return 值，會是 0 bytes，(很奇怪，但試出來是這樣)
+             break
+        }
+    }
+    return re
+}
+compressTest(data: "這是中文".data(using: .utf8))
+```
+
+實驗16b: 解壓縮
+```swift=
+func decompressTest(data: Data) -> Data{
+    var idx = 0
+    let lenSrc = data.count
+    let pageSize = 1024
+    var re = Data()
+    
+    let r1 = try! InputFilter(.decompress, using: .zlib, readingFrom: { (a1: Int) -> Data in
+        print(a1)
+        let len = min(a1, lenSrc - idx)
+        let da2 = data.subdata(in: idx ..< idx + len)
+        idx += len
+        return da2
+    })
+    
+    while let page = try! r1.readData(ofLength: pageSize){
+        re.append(page)
+    }
+    
+    return re
+}
 ```
