@@ -510,3 +510,22 @@ func decompressTest(data: Data) -> Data{
     return re
 }
 ```
+
+實驗16c: 解壓縮 失敗
+- 處理 pdf 中的 /FlateDecode 表示是 zlib
+- 測試資料如下，但會失敗。
+- 原因是 0x78 0x9C 兩個字元不能算在內，它們算是 zlib 算法的 magic number。拿掉這2個就可以成功了。
+```swift=
+// 78 9C 4D 8E 31 0B C2 40 0C 85 F7 FC 8A 37 0B 5E 93 5C DB EB ED 42 E7 76 A9 BB 68 27 15 DB FF 0F 26 77 15 4C 08 BC 90 BC 2F 09 1A 73 09 B0 E5 39 FC B5 29 2B 6E 4F FA 50 64 86 97 E4 8E A1 C9 D4 76 A7 E5 84 97 CF 82 68 57 BC 55 FD 76 CD 28 F0 9C 47 54 B1 AD D4 8C 11 EB 4E BE DD 6B 0B 19 62 EF A8 07 4D 46 92 81 B9 3E E1 27 02 33 2B 62 2A C4 A3 33 E6 41 68 AE 2D 2E 6F B3 4D F4 05 8A 6A 26 A6
+
+func decompressTest(data: Data) -> Data{
+    var idx = 0
+    let lenSrc = data.count
+    let pageSize = 1024
+    var re = Data()
+    if (data[0]==0x78&&data[1]==0x9C){
+        idx += 2 // zlib 的 magic number 若包含進去，會解壓失敗。 pdf 的 stream 是包含這2個 byte 的
+    }
+    // 以下省略
+}
+```
