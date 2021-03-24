@@ -1,18 +1,21 @@
-struct FindMagicNumbersPosition{
+import Foundation
+
+// find magic numbers
+public struct FindMagicNumbersPosition{
     var data: Data
     var magicNumber: [[UInt8]]
-    init(magicNumbers:[[UInt8]] , data: Data){
+    public init(magicNumbers:[[UInt8]] , data: Data){
         self.data = data
         self.magicNumber = magicNumbers
     }
-    init(magicNumber:[UInt8], data: Data){
+    public init(magicNumber:[UInt8], data: Data){
         self.magicNumber = [magicNumber]
         self.data = data
     }
     var p0bytes : UnsafePointer<UInt8>{
         return (data as NSData).bytes.assumingMemoryBound(to: UInt8.self)
     }
-    func main(cntIgnore: Int = 0) -> Int {
+    public func main(cntIgnore: Int = 0) -> Int {
         // magic number 04 14 00
         // "50 4B 03 04 14 00 02 00 08 00 E7 7E 36 42 AD 87" ... count:16 answer:3 即 [3] 是 14
         //   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16  ... 略過2個，表示從 [3] 開始測
@@ -36,7 +39,7 @@ struct FindMagicNumbersPosition{
         
         return -1
     }
-    func mainReverse(cntIgnore: Int=0) -> Int{
+    public func mainReverse(cntIgnore: Int=0) -> Int{
         // magic number  4 14  0
         // "50 4B 03 04 14 00 02 00 08 00 E7 7E 36 42 AD 87" ... count:16 answer:3 即 [3] 是 14
         //  16 15 14 13 12 11 10 09 08 07 06 05 04 03 02 01 ... 略過2個，表示從42開始測
@@ -64,7 +67,7 @@ struct FindMagicNumbersPosition{
         return -1
     }
     private func isFits(_ p: UnsafePointer<UInt8>,_ pEnd: UnsafePointer<UInt8>)->Bool {
-        return magicNumber.any({isFit(p,pEnd,$0)}) // 只需1個成立即可
+        return magicNumber.ijnAny({isFit(p,pEnd,$0)}) // 只需1個成立即可
 //        for a1 in magicNumber {
 //            if isFit(p,pEnd,a1) {
 //                return true  // 只需1個成立即可
@@ -81,7 +84,7 @@ struct FindMagicNumbersPosition{
             return true
         }
         
-        return magicNumber.all({ a1 in
+        return magicNumber.ijnAll({ a1 in
             guard fnIsValidAddressP2() else {
                 return false
             }
