@@ -4,6 +4,9 @@ tags: ios, font,
 ---
 ios font size .body .title 動態的
 ---
+![](https://i.imgur.com/jvCkeKd.png)
+
+
 # 情境描述
 當使用 TextView 在 Cell 中時，字是小很多(比起 Label 在 Cell 中)。
 
@@ -42,3 +45,16 @@ ptv.attributedText = NSAttributedString(string: "hi", attributes: [NSAttributedS
 # 規畫
 - 全域 字型大小 管理的
     - 可透過 protocol 、 「經文 font」之類的、「scale」值。
+    - PlayGround Code [https://github.com/snowray712000/TechSwift/blob/main/ios font size .body .title 動態的.swift](https://github.com/snowray712000/TechSwift/blob/main/ios%20font%20size%20.body%20.title%20%E5%8B%95%E6%85%8B%E7%9A%84.swift)
+
+```swift=
+public enum TextType{
+    case sn
+    case normal
+    case key(Int)
+}
+public protocol IAttributesGetter {
+    func getFontAndColor(_ tp: TextType) -> [NSAttributedString.Key : Any]?
+}
+```
+
