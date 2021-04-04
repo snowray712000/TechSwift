@@ -224,4 +224,20 @@ class MyAppView : UIViewController {
     }
 }
 ```
+
+try6 改變顏色
+---
+- 預設，是白色，但會看不到(然後以為失敗)
+- 設定，找不到屬性
+    - 全部的 UIPageControl 是共用 的樣子
+    - https://stackoverflow.com/questions/38148311/uipageviewcontroller-indicators-dont-change-color
+```swift
+// 於 page 的 viewDidLoad 呼叫
+let proxy = UIPageControl.appearance()
+proxy.pageIndicatorTintColor = UIColor.red.withAlphaComponent(0.2)
+proxy.currentPageIndicatorTintColor = UIColor.red
+proxy.backgroundColor = UIColor.yellow.withAlphaComponent(0.6)
+proxy.backgroundStyle = .minimal
+```
+
 ###### tags: `UIPageViewController` `UIPageViewControllerDataSource`
