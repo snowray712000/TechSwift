@@ -66,3 +66,7 @@ v.leftAnchor.constraint(
 ).isActive = true
 ```
 
+更好的方法
+```swift=
+r1.constant = tv!.frame.width * 2.0 / 3.0
+```
