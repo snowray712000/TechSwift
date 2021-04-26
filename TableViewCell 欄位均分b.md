@@ -42,6 +42,7 @@ v.leftAnchor.constraint(
     constant: tv!.frame.width / 3.0).isActive = true
 ```
 
+## dynamic constrains
 更新 constrains
 若原本是 平分2個，現在變成3個。
 
@@ -70,3 +71,44 @@ v.leftAnchor.constraint(
 ```swift=
 r1.constant = tv!.frame.width * 2.0 / 3.0
 ```
+## stackview 方法
+使用 StackView、有點像 C# 的 FlowLayoutPanel
+它的實作如下
+```swift=
+// 方法1 自動
+let re = UIStackView()
+re.axis = .horizontal
+re.addArrangedSubview(UITextView())
+re.addArrangedSubview(UITextView())
+re.addArrangedSubview(UITextView())
+re.addArrangedSubview(UITextView())
+re.distribution = .fillEqually
+re.alignment = .fill
+for a1 in re.arrangedSubviews {
+    let v =
+    (a1 as! UITextView)
+    v.isScrollEnabled = false
+    v.isEditable = false
+    v.isSelectable = false
+    v.textAlignment = .justified
+    v.text = "耶穌基督的僕人保羅，\n奉召為使徒，特派傳　神的福音。"
+}
+
+contentView.addSubview(re)
+let v = re ; let pv = contentView ;
+v.translatesAutoresizingMaskIntoConstraints = false
+NSLayoutConstraint.activate([
+    v.leftAnchor.constraint(equalTo: pv.leftAnchor),
+    v.rightAnchor.constraint(equalTo: pv.rightAnchor),
+    v.centerYAnchor.constraint(equalTo: pv.centerYAnchor),
+])
+```
+## 效率比較, 手動(配合constrain) 、 StackView
+
+手動方法, 當欄數變多, 秒數變多如下
+277, 178, 104, 15 ms
+
+StackView方法, 
+41 38 34 26
+
+所以還是以 StackView 方式進行吧
